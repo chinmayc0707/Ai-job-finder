@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe Implementation</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e0e0e0; /* Light gray background matching wireframe */
+            padding: 10px 20px;
+            border-bottom: 2px solid #ccc; /* Separator line */
+        }
+
+        .navbar .logo {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 15px; /* Spacing between links */
+        }
+
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .navbar .nav-links span {
+            color: #333;
+        }
+
+        .navbar .login-btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 50%; /* Circle shape as in wireframe */
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        /* Rest of the page placeholders */
+        .section {
+            padding: 40px 20px;
+            border-bottom: 1px solid #ccc;
+            text-align: center; /* General centering for sections based on wireframe */
+        }
+
+        .section-left {
+            padding: 40px 20px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        /* Specific section styling placeholders */
+        .hero-carousel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero-carousel .arrow {
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .hero-carousel-content {
+            text-align: left;
+            flex-grow: 1;
+            padding: 0 40px;
+        }
+
+        .carousel-dots {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .carousel-dots span {
+            width: 10px;
+            height: 10px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .how-it-works-steps {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .featured-btn {
+            background-color: #999;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <div class="logo">Logo</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <span>|</span>
+            <a href="#">About</a>
+            <span>|</span>
+            <a href="#">Services</a>
+            <span>|</span>
+            <a href="#">Personalized jobs</a>
+            <span>|</span>
+            <a href="#">Job board</a>
+        </div>
+        <button class="login-btn">Login</button>
+    </nav>
+
+    <!-- CTAs / Carousel Section -->
+    <div class="section">
+        <div class="hero-carousel">
+            <div class="arrow">&lt;</div>
+            <div class="hero-carousel-content">
+                <h2>CTAs</h2>
+                <p>Description</p>
+            </div>
+            <div class="arrow">&gt;</div>
+        </div>
+        <div class="carousel-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- About successful clients Section -->
+    <div class="section-left">
+        <h3>About successful clients</h3>
+        <p>Metrics</p>
+        <p>Eg- 10k+ Jobs and 98% Placement</p>
+    </div>
+
+    <!-- How it works Section -->
+    <div class="section">
+        <h3>How it works</h3>
+        <div class="how-it-works-steps">
+            <div>Register your account</div>
+            <div>&darr;</div>
+            <div>Upload your resume</div>
+            <div>&darr;</div>
+            <div>Get personalized AI Jobs</div>
+        </div>
+        <button class="featured-btn">Get Featured jobs</button>
+    </div>
+
+    <!-- Newsletter Section -->
+    <div class="section-left">
+        <h3>Subscribe for newsletter</h3>
+        <br><br>
+        <p>Form for emails</p>
+    </div>
+
+</body>
+</html>
