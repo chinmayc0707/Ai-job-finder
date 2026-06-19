@@ -1,188 +1,879 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wireframe Implementation</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────────────── */
+    :root {
+      --canvas:          #000000;
+      --surface-soft:    #0d0d0d;
+      --surface-card:    #1a1a1a;
+      --surface-elev:    #262626;
+      --carbon:          #2b2b2b;
+      --hairline:        #3c3c3c;
+      --hairline-strong: #262626;
+      --on-dark:         #ffffff;
+      --body-text:       #bbbbbb;
+      --body-strong:     #e6e6e6;
+      --muted:           #7e7e7e;
+      --m-blue-lt:       #0066b1;
+      --m-blue-dk:       #1c69d4;
+      --m-red:           #e22718;
 
-        /* Navbar styles */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #e0e0e0; /* Light gray background matching wireframe */
-            padding: 10px 20px;
-            border-bottom: 2px solid #ccc; /* Separator line */
-        }
+      --sp-xxs: 4px;
+      --sp-xs:  8px;
+      --sp-sm:  12px;
+      --sp-md:  16px;
+      --sp-lg:  24px;
+      --sp-xl:  40px;
+      --sp-xxl: 64px;
+      --sp-sec: 96px;
+    }
 
-        .navbar .logo {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--canvas);
+      color: var(--on-dark);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: inherit; }
+    input { font-family: inherit; }
 
-        .navbar .nav-links {
-            display: flex;
-            gap: 15px; /* Spacing between links */
-        }
+    /* ─── M TRICOLOR STRIPE ─────────────────────────────────── */
+    .m-stripe {
+      height: 4px;
+      background: linear-gradient(
+        to right,
+        var(--m-blue-lt) 0% 33.33%,
+        var(--m-blue-dk) 33.33% 66.66%,
+        var(--m-red)     66.66% 100%
+      );
+      flex-shrink: 0;
+    }
 
-        .navbar .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-size: 0.9em;
-        }
+    /* ─── OUTER WRAPPER ─────────────────────────────────────── */
+    .outer-shell {
+      min-height: 100vh;
+    }
 
-        .navbar .nav-links span {
-            color: #333;
-        }
+    /* ─── INNER CONTAINER (black card) ──────────────────────── */
+    .inner-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-        .navbar .login-btn {
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 50%; /* Circle shape as in wireframe */
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.8em;
-        }
+    /* ─── TOP NAV ────────────────────────────────────────────── */
+    .top-nav {
+      height: 64px;
+      background: var(--canvas);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: var(--sp-xl);
+    }
 
-        /* Rest of the page placeholders */
-        .section {
-            padding: 40px 20px;
-            border-bottom: 1px solid #ccc;
-            text-align: center; /* General centering for sections based on wireframe */
-        }
+    .nav-logo {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--on-dark);
+      white-space: nowrap;
+    }
 
-        .section-left {
-            padding: 40px 20px;
-            border-bottom: 1px solid #ccc;
-            text-align: left;
-        }
+    .nav-divider-v {
+      width: 1px;
+      height: 24px;
+      background: var(--hairline);
+      flex-shrink: 0;
+    }
 
-        /* Specific section styling placeholders */
-        .hero-carousel {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 0;
+      flex: 1;
+    }
+    .nav-links li { display: flex; align-items: center; }
+    .nav-links li + li::before {
+      content: '|';
+      color: var(--hairline);
+      margin: 0 var(--sp-sm);
+      font-weight: 300;
+    }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: var(--body-text);
+      transition: color .2s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover { color: var(--on-dark); }
 
-        .hero-carousel .arrow {
-            font-size: 2em;
-            cursor: pointer;
-        }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+      white-space: nowrap;
+    }
 
-        .hero-carousel-content {
-            text-align: left;
-            flex-grow: 1;
-            padding: 0 40px;
-        }
+    .btn-login {
+      background: var(--on-dark);
+      color: var(--canvas);
+      border: 1px solid var(--on-dark);
+      padding: 0 var(--sp-lg);
+      height: 36px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 0;
+      transition: background .2s, color .2s;
+    }
+    .btn-login:hover { background: var(--canvas); color: var(--on-dark); }
 
-        .carousel-dots {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
+    .nav-admin {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
 
-        .carousel-dots span {
-            width: 10px;
-            height: 10px;
-            background-color: #ccc;
-            border-radius: 50%;
-            display: inline-block;
-        }
+    /* ─── HERO CAROUSEL BAND ─────────────────────────────────── */
+    .hero-band {
+      background: var(--surface-soft);
+      padding: var(--sp-xxl) var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+      position: relative;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-        .how-it-works-steps {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
+    /* Arrows anchored to the section edges */
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: var(--surface-card);
+      color: var(--on-dark);
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      z-index: 10;
+      transition: border-color .2s, background .2s;
+    }
+    .carousel-arrow:hover { border-color: var(--on-dark); background: var(--surface-elev); }
+    .arrow-prev { left: var(--sp-lg); }
+    .arrow-next { right: var(--sp-lg); }
 
-        .featured-btn {
-            background-color: #999;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-    </style>
+    .carousel-wrapper {
+      position: relative;
+      max-width: 860px;
+    }
+
+    .carousel-track {
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      animation: fadeIn .4s ease;
+    }
+    .slide.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .slide-eyebrow {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--sp-md);
+    }
+
+    .slide-h1 {
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 700;
+      line-height: 1.0;
+      text-transform: uppercase;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-lg);
+      letter-spacing: -0.5px;
+    }
+
+    .slide-body {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--body-text);
+      max-width: 480px;
+      line-height: 1.6;
+      margin-bottom: var(--sp-xl);
+    }
+
+    .slide-ctas {
+      display: flex;
+      gap: var(--sp-md);
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--canvas);
+      color: var(--on-dark);
+      border: 1px solid var(--on-dark);
+      padding: 0 var(--sp-xl);
+      height: 48px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 0;
+      display: inline-flex;
+      align-items: center;
+      transition: background .2s, color .2s;
+    }
+    .btn-primary:hover { background: var(--on-dark); color: var(--canvas); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--on-dark);
+      border: 1px solid var(--hairline);
+      padding: 0 var(--sp-xl);
+      height: 48px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 0;
+      display: inline-flex;
+      align-items: center;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-outline:hover { border-color: var(--on-dark); }
+
+    /* Dots */
+    .carousel-dots {
+      display: flex;
+      gap: var(--sp-xs);
+      margin-top: var(--sp-xl);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: var(--hairline);
+      transition: background .2s;
+    }
+    .dot.active { background: var(--on-dark); }
+
+    /* ─── CAROUSEL TIMER BAR ─────────────────────────────────── */
+    .carousel-timer-container {
+      width: 100%;
+      height: 2px;
+      background: var(--hairline);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 20;
+    }
+    .carousel-timer-bar {
+      height: 100%;
+      background: var(--on-dark);
+      width: 0%;
+    }
+
+    /* ─── METRICS BAND ───────────────────────────────────────── */
+    .metrics-band {
+      padding: var(--sp-sec) var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .band-eyebrow {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--sp-xs);
+    }
+
+    .band-heading {
+      font-size: clamp(32px, 4vw, 56px);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.05;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-xxl);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-md);
+    }
+
+    .metric-card {
+      background: var(--surface-card);
+      border: 1px solid var(--hairline);
+      padding: var(--sp-xl) var(--sp-lg);
+    }
+
+    .metric-val {
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 700;
+      line-height: 1.0;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-xs);
+    }
+
+    .metric-lbl {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--body-text);
+    }
+
+    /* ─── HOW IT WORKS BAND ─────────────────────────────────── */
+    .how-band {
+      background: var(--surface-soft);
+      padding: var(--sp-sec) var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .how-heading {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-xxl);
+    }
+
+    .steps-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .step-row {
+      background: var(--surface-card);
+      border: 1px solid var(--hairline);
+      padding: var(--sp-lg) var(--sp-xl);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-lg);
+      text-align: left;
+    }
+
+    .step-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--muted);
+      min-width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .step-divider-v {
+      width: 1px;
+      height: 32px;
+      background: var(--hairline);
+      flex-shrink: 0;
+    }
+
+    .step-label {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--body-strong);
+      line-height: 1.4;
+    }
+
+    .step-connector {
+      color: var(--muted);
+      font-size: 20px;
+      padding: var(--sp-sm) 0;
+      line-height: 1;
+    }
+
+    .how-cta-wrap {
+      margin-top: var(--sp-xxl);
+    }
+
+    /* ─── NEWSLETTER BAND ────────────────────────────────────── */
+    .newsletter-band {
+      padding: var(--sp-sec) var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .newsletter-inner {
+      max-width: 640px;
+    }
+
+    .newsletter-heading {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.15;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-md);
+    }
+
+    .newsletter-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--body-text);
+      line-height: 1.6;
+      margin-bottom: var(--sp-xl);
+    }
+
+    .email-form {
+      display: flex;
+      gap: var(--sp-md);
+    }
+
+    .email-input {
+      flex: 1;
+      background: var(--surface-card);
+      color: var(--on-dark);
+      border: 1px solid var(--hairline);
+      padding: 0 var(--sp-md);
+      height: 48px;
+      font-size: 15px;
+      font-weight: 300;
+      border-radius: 0;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .email-input::placeholder { color: var(--muted); }
+    .email-input:focus { border-color: var(--on-dark); }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      background: var(--canvas);
+      padding: var(--sp-xxl) var(--sp-xl);
+      border-top: 1px solid var(--hairline);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sp-xl);
+      margin-bottom: var(--sp-xl);
+    }
+
+    .footer-col-head {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-md);
+    }
+
+    .footer-links-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-xs);
+    }
+    .footer-links-list a {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      transition: color .2s;
+    }
+    .footer-links-list a:hover { color: var(--on-dark); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--hairline);
+      padding-top: var(--sp-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .outer-shell { padding: 0; }
+      .micro-bar { padding: var(--sp-md) var(--sp-md) 0; }
+      .top-nav { padding: 0 var(--sp-lg); gap: var(--sp-md); }
+      .nav-links { display: none; }
+      .nav-divider-v { display: none; }
+      .hero-band { padding: var(--sp-xxl) var(--sp-lg); }
+      .arrow-prev { left: -16px; }
+      .arrow-next { right: -16px; }
+      .metrics-band { padding: var(--sp-xxl) var(--sp-lg); }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .how-band { padding: var(--sp-xxl) var(--sp-lg); }
+      .newsletter-band { padding: var(--sp-xxl) var(--sp-lg); }
+      .email-form { flex-direction: column; }
+      .footer { padding: var(--sp-xxl) var(--sp-lg); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; gap: var(--sp-md); text-align: center; }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Navbar Section -->
-    <nav class="navbar">
-        <div class="logo">Logo</div>
-        <div class="nav-links">
-            <a href="#">Home</a>
-            <span>|</span>
-            <a href="#">About</a>
-            <span>|</span>
-            <a href="#">Services</a>
-            <span>|</span>
-            <a href="#">Personalized jobs</a>
-            <span>|</span>
-            <a href="#">Job board</a>
-        </div>
-        <button class="login-btn">Login</button>
+<div class="outer-shell">
+
+  <!-- ── INNER CARD ────────────────────────────────────────────── -->
+  <div class="inner-card">
+    <div class="m-stripe"></div>
+
+    <!-- ── TOP NAV ──────────────────────────────────────────────── -->
+    <nav class="top-nav">
+      <span class="nav-logo">Logo</span>
+      <div class="nav-divider-v"></div>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Personalized Jobs</a></li>
+        <li><a href="#">Job Board</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="/login" class="btn-login" style="display: inline-block; text-align: center; line-height: 36px;">Login</a>
+        <span class="nav-admin">For Admin &nbsp;|&nbsp; Profile</span>
+      </div>
     </nav>
 
-    <!-- CTAs / Carousel Section -->
-    <div class="section">
-        <div class="hero-carousel">
-            <div class="arrow">&lt;</div>
-            <div class="hero-carousel-content">
-                <h2>CTAs</h2>
-                <p>Description</p>
+    <!-- ── HERO CAROUSEL ─────────────────────────────────────────── -->
+    <section class="hero-band">
+      <button class="carousel-arrow arrow-prev" id="prevBtn" aria-label="Previous slide">&#8592;</button>
+      <button class="carousel-arrow arrow-next" id="nextBtn" aria-label="Next slide">&#8594;</button>
+
+      <div class="carousel-wrapper">
+        <div class="carousel-track">
+          <!-- Slide 1 -->
+          <div class="slide active">
+            <p class="slide-eyebrow">AI-Powered Platform</p>
+            <h1 class="slide-h1">Find Your<br>Next Role.</h1>
+            <p class="slide-body">AI-powered job matching connects you with the right opportunities every day — curated precisely to your skills and goals.</p>
+            <div class="slide-ctas">
+              <button class="btn-primary">Explore Jobs &nbsp;→</button>
+              <button class="btn-outline">Upload Resume</button>
             </div>
-            <div class="arrow">&gt;</div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="slide">
+            <p class="slide-eyebrow">For Employers</p>
+            <h1 class="slide-h1">Hire With<br>Precision.</h1>
+            <p class="slide-body">Thousands of leading companies rely on our platform to find top talent quickly and confidently.</p>
+            <div class="slide-ctas">
+              <button class="btn-primary">Post a Job &nbsp;→</button>
+              <button class="btn-outline">View Packages</button>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="slide">
+            <p class="slide-eyebrow">Career Growth</p>
+            <h1 class="slide-h1">Curated<br>For You.</h1>
+            <p class="slide-body">Receive daily alerts tailored to your profile. Your next career move is closer than you think.</p>
+            <div class="slide-ctas">
+              <button class="btn-primary">Create Profile &nbsp;→</button>
+              <button class="btn-outline">Browse All</button>
+            </div>
+          </div>
+          <!-- Slide 4 -->
+          <div class="slide">
+            <p class="slide-eyebrow">Trusted Network</p>
+            <h1 class="slide-h1">98% Place-<br>ment Rate.</h1>
+            <p class="slide-body">Our record speaks for itself. Join over 10,000 professionals who've landed their ideal role through our platform.</p>
+            <div class="slide-ctas">
+              <button class="btn-primary">Get Started &nbsp;→</button>
+              <button class="btn-outline">View Stories</button>
+            </div>
+          </div>
         </div>
-        <div class="carousel-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+
+        <div class="carousel-dots" id="carouselDots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
         </div>
-    </div>
+      </div>
+      <div class="carousel-timer-container">
+        <div class="carousel-timer-bar" id="timerBar"></div>
+      </div>
+    </section>
 
-    <!-- About successful clients Section -->
-    <div class="section-left">
-        <h3>About successful clients</h3>
-        <p>Metrics</p>
-        <p>Eg- 10k+ Jobs and 98% Placement</p>
-    </div>
 
-    <!-- How it works Section -->
-    <div class="section">
-        <h3>How it works</h3>
-        <div class="how-it-works-steps">
-            <div>Register your account</div>
-            <div>&darr;</div>
-            <div>Upload your resume</div>
-            <div>&darr;</div>
-            <div>Get personalized AI Jobs</div>
+    <!-- ── METRICS BAND ──────────────────────────────────────────── -->
+    <section class="metrics-band">
+      <p class="band-eyebrow">About Successful Clients</p>
+      <h2 class="band-heading">Metrics.</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val">10k+</div>
+          <div class="metric-lbl">Jobs Listed</div>
         </div>
-        <button class="featured-btn">Get Featured jobs</button>
-    </div>
+        <div class="metric-card">
+          <div class="metric-val">98%</div>
+          <div class="metric-lbl">Placement Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">500+</div>
+          <div class="metric-lbl">Partner Companies</div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Newsletter Section -->
-    <div class="section-left">
-        <h3>Subscribe for newsletter</h3>
-        <br><br>
-        <p>Form for emails</p>
-    </div>
+    <div class="m-stripe"></div>
 
+    <!-- ── HOW IT WORKS ──────────────────────────────────────────── -->
+    <section class="how-band">
+      <h2 class="how-heading">How It Works</h2>
+      <div class="steps-col">
+        <div class="step-row">
+          <span class="step-num">01</span>
+          <div class="step-divider-v"></div>
+          <span class="step-label">Register Your Account</span>
+        </div>
+        <div class="step-connector">↓</div>
+        <div class="step-row">
+          <span class="step-num">02</span>
+          <div class="step-divider-v"></div>
+          <span class="step-label">Upload Your Resume</span>
+        </div>
+        <div class="step-connector">↓</div>
+        <div class="step-row">
+          <span class="step-num">03</span>
+          <div class="step-divider-v"></div>
+          <span class="step-label">Get Personalized AI Jobs</span>
+        </div>
+      </div>
+      <div class="how-cta-wrap">
+        <button class="btn-primary">Get Featured Jobs &nbsp;→</button>
+      </div>
+    </section>
+
+    <div class="m-stripe"></div>
+
+    <!-- ── NEWSLETTER ────────────────────────────────────────────── -->
+    <section class="newsletter-band">
+      <div class="newsletter-inner">
+        <h2 class="newsletter-heading">Subscribe for<br>Newsletter</h2>
+        <p class="newsletter-sub">Stay ahead of the market — curated job alerts, hiring trends, and industry insight delivered straight to your inbox.</p>
+        <div class="email-form">
+          <input type="email" class="email-input" placeholder="Enter your email address" aria-label="Email address" />
+          <button class="btn-primary">Subscribe</button>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const slides = document.querySelectorAll('.slide');
+      const dots = document.querySelectorAll('.dot');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const timerBar = document.getElementById('timerBar');
+
+      let currentSlide = 0;
+      const slideInterval = 5000; // 5 seconds per slide
+      let intervalId;
+      let startTime;
+      let animationFrameId;
+
+      function updateCarousel() {
+        slides.forEach((slide, index) => {
+          slide.classList.toggle('active', index === currentSlide);
+          dots[index].classList.toggle('active', index === currentSlide);
+        });
+        resetTimer();
+      }
+
+      function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateCarousel();
+      }
+
+      function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        updateCarousel();
+      }
+
+      function resetTimer() {
+        clearInterval(intervalId);
+        cancelAnimationFrame(animationFrameId);
+        
+        startTime = performance.now();
+        
+        intervalId = setInterval(nextSlide, slideInterval);
+        animateProgressBar();
+      }
+
+      function animateProgressBar() {
+        const now = performance.now();
+        const elapsed = now - startTime;
+        const progress = Math.min((elapsed / slideInterval) * 100, 100);
+        
+        timerBar.style.width = progress + '%';
+        
+        if (progress < 100) {
+          animationFrameId = requestAnimationFrame(animateProgressBar);
+        }
+      }
+
+      prevBtn.addEventListener('click', () => {
+        prevSlide();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        nextSlide();
+      });
+
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          currentSlide = index;
+          updateCarousel();
+        });
+      });
+
+      // Initialize
+      updateCarousel();
+    </script>
+
+    <!-- ── FOOTER ────────────────────────────────────────────────── -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-col-head">Platform</div>
+          <ul class="footer-links-list">
+            <li><a href="#">Job Board</a></li>
+            <li><a href="#">Personalized Jobs</a></li>
+            <li><a href="#">AI Matching</a></li>
+            <li><a href="#">Resume Upload</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-head">Services</div>
+          <ul class="footer-links-list">
+            <li><a href="#">Career Coaching</a></li>
+            <li><a href="#">Resume Review</a></li>
+            <li><a href="#">Employer Services</a></li>
+            <li><a href="#">Staffing</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-head">Company</div>
+          <ul class="footer-links-list">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Clients</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-head">Support</div>
+          <ul class="footer-links-list">
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2024 Job Portal. All rights reserved.</span>
+        <span class="footer-copy">EN</span>
+      </div>
+    </footer>
+
+  </div><!-- /inner-card -->
+</div><!-- /outer-shell -->
+
+<script>
+  /* ── Carousel ──────────────────────────────────────── */
+  const slides = document.querySelectorAll('.slide');
+  const dots   = document.querySelectorAll('.dot');
+  const timerBar = document.getElementById('timerBar');
+  let current  = 0;
+  let timer;
+  let startTime;
+  let animationFrameId;
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    resetTimer();
+  }
+
+  function animateProgressBar() {
+    const now = performance.now();
+    const elapsed = now - startTime;
+    const progress = Math.min((elapsed / 5000) * 100, 100);
+    
+    if (timerBar) {
+      timerBar.style.width = progress + '%';
+    }
+    
+    if (progress < 100) {
+      animationFrameId = requestAnimationFrame(animateProgressBar);
+    }
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => { goTo(current - 1); });
+  document.getElementById('nextBtn').addEventListener('click', () => { goTo(current + 1); });
+  dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); }));
+
+  function resetTimer() {
+    clearInterval(timer);
+    cancelAnimationFrame(animationFrameId);
+    
+    startTime = performance.now();
+    timer = setInterval(() => goTo(current + 1), 5000);
+    animateProgressBar();
+  }
+  resetTimer();
+
+</script>
 </body>
 </html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Job Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────────────── */
+    :root {
+      --canvas:          #000000;
+      --surface-soft:    #0d0d0d;
+      --surface-card:    #1a1a1a;
+      --surface-elev:    #262626;
+      --carbon:          #2b2b2b;
+      --hairline:        #3c3c3c;
+      --hairline-strong: #262626;
+      --on-dark:         #ffffff;
+      --body-text:       #bbbbbb;
+      --body-strong:     #e6e6e6;
+      --muted:           #7e7e7e;
+      --m-blue-lt:       #0066b1;
+      --m-blue-dk:       #1c69d4;
+      --m-red:           #e22718;
+
+      --sp-xxs: 4px;
+      --sp-xs:  8px;
+      --sp-sm:  12px;
+      --sp-md:  16px;
+      --sp-lg:  24px;
+      --sp-xl:  40px;
+      --sp-xxl: 64px;
+      --sp-sec: 96px;
+    }
+
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--canvas);
+      color: var(--on-dark);
+      font-weight: 300;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── M TRICOLOR STRIPE ─────────────────────────────────── */
+    .m-stripe {
+      height: 4px;
+      background: linear-gradient(
+        to right,
+        var(--m-blue-lt) 0% 33.33%,
+        var(--m-blue-dk) 33.33% 66.66%,
+        var(--m-red)     66.66% 100%
+      );
+      width: 100%;
+    }
+
+    /* ─── TOP NAV ────────────────────────────────────────────── */
+    .top-nav {
+      height: 64px;
+      background: var(--canvas);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .nav-logo {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--on-dark);
+    }
+
+    .btn-back {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--body-text);
+      transition: color .2s;
+    }
+    .btn-back:hover { color: var(--on-dark); }
+
+    /* ─── LOGIN CONTAINER ────────────────────────────────────── */
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-xl);
+    }
+
+    .login-card {
+      background: var(--surface-card);
+      border: 1px solid var(--hairline);
+      width: 100%;
+      max-width: 400px;
+      padding: var(--sp-xxl) var(--sp-xl);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .login-header {
+      margin-bottom: var(--sp-xl);
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      margin-bottom: var(--sp-sm);
+    }
+
+    .login-header p {
+      font-size: 14px;
+      color: var(--body-text);
+      font-weight: 300;
+    }
+
+    .form-group {
+      margin-bottom: var(--sp-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-xs);
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .form-input {
+      background: var(--surface-soft);
+      color: var(--on-dark);
+      border: 1px solid var(--hairline);
+      padding: 0 var(--sp-md);
+      height: 48px;
+      font-size: 15px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--on-dark); }
+
+    .btn-submit {
+      background: var(--on-dark);
+      color: var(--canvas);
+      border: 1px solid var(--on-dark);
+      width: 100%;
+      height: 48px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: var(--sp-md);
+      transition: background .2s, color .2s;
+    }
+    .btn-submit:hover { background: var(--canvas); color: var(--on-dark); }
+
+    .login-footer {
+      margin-top: var(--sp-lg);
+      text-align: center;
+      font-size: 13px;
+      color: var(--body-text);
+    }
+    .login-footer a {
+      color: var(--on-dark);
+      font-weight: 700;
+    }
+    .login-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .login-card { padding: var(--sp-xl); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="m-stripe"></div>
+
+  <nav class="top-nav">
+    <span class="nav-logo">Logo</span>
+    <a href="/" class="btn-back">← Back to Home</a>
+  </nav>
+
+  <main class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Login</h1>
+        <p>Welcome back. Please enter your details.</p>
+      </div>
+
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn-submit">Sign In</button>
+      </form>
+
+      <div class="login-footer">
+        Don't have an account? <a href="#">Sign up</a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
