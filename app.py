@@ -34,6 +34,11 @@ AI_Job_recommendation = [
     }
 ]
 
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/jobs')
 def jobs():
     return render_template('jobs.html', jobs=AI_Job_recommendation)
