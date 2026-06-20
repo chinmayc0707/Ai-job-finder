@@ -49,8 +49,6 @@
     button { cursor: pointer; font-family: inherit; }
     input { font-family: inherit; }
 
-    /* ─── M TRICOLOR STRIPE ─────────────────────────────────── */
-
     /* ─── OUTER WRAPPER ─────────────────────────────────────── */
     .outer-shell {
       min-height: 100vh;
@@ -155,7 +153,6 @@
       justify-content: center;
     }
 
-    /* Arrows anchored to the section edges */
     .carousel-arrow {
       position: absolute;
       top: 50%;
@@ -244,7 +241,9 @@
       border-radius: 0;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       transition: background .2s, color .2s;
+      text-decoration: none;
     }
     .btn-primary:hover { background: var(--on-dark); color: var(--canvas); }
 
@@ -261,11 +260,11 @@
       border-radius: 0;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       transition: border-color .2s, color .2s;
     }
     .btn-outline:hover { border-color: var(--on-dark); }
 
-    /* Dots */
     .carousel-dots {
       display: flex;
       gap: var(--sp-xs);
@@ -280,7 +279,6 @@
     }
     .dot.active { background: var(--on-dark); }
 
-    /* ─── CAROUSEL TIMER BAR ─────────────────────────────────── */
     .carousel-timer-container {
       width: 100%;
       height: 2px;
@@ -469,6 +467,80 @@
     .email-input::placeholder { color: var(--muted); }
     .email-input:focus { border-color: var(--on-dark); }
 
+    /* ─── FAQ SECTION ────────────────────────────────────────── */
+    .faq-band {
+      padding: var(--sp-sec) var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+      background: var(--canvas);
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-header {
+      text-align: center;
+      margin-bottom: var(--sp-xxl);
+    }
+
+    .faq-header h2 {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--on-dark);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--hairline);
+      margin-bottom: var(--sp-sm);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--on-dark);
+      text-align: left;
+      padding: var(--sp-lg) 0;
+      font-size: 16px;
+      font-weight: 400;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color .2s;
+    }
+
+    .faq-question:hover {
+      color: var(--muted);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      color: var(--body-text);
+      font-size: 15px;
+      font-weight: 300;
+      padding-bottom: 0;
+      transition: padding 0.3s ease, max-height 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+      padding-bottom: var(--sp-lg);
+    }
+
+    .faq-icon {
+      font-size: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+
     /* ─── FOOTER ─────────────────────────────────────────────── */
     .footer {
       background: var(--canvas);
@@ -524,7 +596,6 @@
     /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 768px) {
       .outer-shell { padding: 0; }
-      .micro-bar { padding: var(--sp-md) var(--sp-md) 0; }
       .top-nav { padding: 0 var(--sp-lg); gap: var(--sp-md); }
       .nav-links { display: none; }
       .nav-divider-v { display: none; }
@@ -546,11 +617,9 @@
 
 <div class="outer-shell">
 
-  <!-- ── INNER CARD ────────────────────────────────────────────── -->
   <div class="inner-card">
     <hr style="border: 0; border-top: 1px solid #ccc; margin: 0;">
 
-    <!-- ── TOP NAV ──────────────────────────────────────────────── -->
     <nav class="top-nav">
       <span class="nav-logo">Logo</span>
       <div class="nav-divider-v"></div>
@@ -566,14 +635,12 @@
       </div>
     </nav>
 
-    <!-- ── HERO CAROUSEL ─────────────────────────────────────────── -->
     <section class="hero-band">
       <button class="carousel-arrow arrow-prev" id="prevBtn" aria-label="Previous slide">&#8592;</button>
       <button class="carousel-arrow arrow-next" id="nextBtn" aria-label="Next slide">&#8594;</button>
 
       <div class="carousel-wrapper">
         <div class="carousel-track">
-          <!-- Slide 1 -->
           <div class="slide active">
             <p class="slide-eyebrow">AI-Powered Platform</p>
             <h1 class="slide-h1">Find Your<br>Next Role.</h1>
@@ -583,7 +650,6 @@
               <button class="btn-outline">Upload Resume</button>
             </div>
           </div>
-          <!-- Slide 2 -->
           <div class="slide">
             <p class="slide-eyebrow">For Employers</p>
             <h1 class="slide-h1">Hire With<br>Precision.</h1>
@@ -593,7 +659,6 @@
               <button class="btn-outline">View Packages</button>
             </div>
           </div>
-          <!-- Slide 3 -->
           <div class="slide">
             <p class="slide-eyebrow">Career Growth</p>
             <h1 class="slide-h1">Curated<br>For You.</h1>
@@ -603,7 +668,6 @@
               <button class="btn-outline">Browse All</button>
             </div>
           </div>
-          <!-- Slide 4 -->
           <div class="slide">
             <p class="slide-eyebrow">Trusted Network</p>
             <h1 class="slide-h1">98% Place-<br>ment Rate.</h1>
@@ -627,8 +691,6 @@
       </div>
     </section>
 
-
-    <!-- ── METRICS BAND ──────────────────────────────────────────── -->
     <section class="metrics-band">
       <p class="band-eyebrow">About Successful Clients</p>
       <h2 class="band-heading">Metrics.</h2>
@@ -650,7 +712,6 @@
 
     <hr style="border: 0; border-top: 1px solid #ccc; margin: 0;">
 
-    <!-- ── HOW IT WORKS ──────────────────────────────────────────── -->
     <section class="how-band">
       <h2 class="how-heading">How It Works</h2>
       <div class="steps-col">
@@ -679,7 +740,6 @@
 
     <hr style="border: 0; border-top: 1px solid #ccc; margin: 0;">
 
-    <!-- ── NEWSLETTER ────────────────────────────────────────────── -->
     <section class="newsletter-band">
       <div class="newsletter-inner">
         <h2 class="newsletter-heading">Subscribe for<br>Newsletter</h2>
@@ -691,79 +751,53 @@
       </div>
     </section>
 
-    <script>
-      const slides = document.querySelectorAll('.slide');
-      const dots = document.querySelectorAll('.dot');
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      const timerBar = document.getElementById('timerBar');
+    <hr style="border: 0; border-top: 1px solid #ccc; margin: 0;">
+    <section class="faq-band" id="faq">
+      <div class="faq-container">
+        <div class="faq-header">
+          <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              How does the AI matching work?
+              <span class="faq-icon">▾</span>
+            </button>
+            <div class="faq-answer">
+              Our AI analyzes your resume, skills, and career goals and matches them against thousands of active job descriptions to find the most compatible roles.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              Is my data secure?
+              <span class="faq-icon">▾</span>
+            </button>
+            <div class="faq-answer">
+              Yes, we use industry-standard encryption and follow strict privacy guidelines to ensure your personal information and resume are kept safe.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              Do I need to pay for a subscription?
+              <span class="faq-icon">▾</span>
+            </button>
+            <div class="faq-answer">
+              We offer both free and premium plans. The basic matching service is free, while premium plans provide enhanced insights and priority applications.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              How often are jobs updated?
+              <span class="faq-icon">▾</span>
+            </button>
+            <div class="faq-answer">
+              Our job board is updated in real-time as employers post new roles, and your personalized recommendations are refreshed daily.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      let currentSlide = 0;
-      const slideInterval = 5000; // 5 seconds per slide
-      let intervalId;
-      let startTime;
-      let animationFrameId;
-
-      function updateCarousel() {
-        slides.forEach((slide, index) => {
-          slide.classList.toggle('active', index === currentSlide);
-          dots[index].classList.toggle('active', index === currentSlide);
-        });
-        resetTimer();
-      }
-
-      function nextSlide() {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateCarousel();
-      }
-
-      function prevSlide() {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        updateCarousel();
-      }
-
-      function resetTimer() {
-        clearInterval(intervalId);
-        cancelAnimationFrame(animationFrameId);
-        
-        startTime = performance.now();
-        
-        intervalId = setInterval(nextSlide, slideInterval);
-        animateProgressBar();
-      }
-
-      function animateProgressBar() {
-        const now = performance.now();
-        const elapsed = now - startTime;
-        const progress = Math.min((elapsed / slideInterval) * 100, 100);
-        
-        timerBar.style.width = progress + '%';
-        
-        if (progress < 100) {
-          animationFrameId = requestAnimationFrame(animateProgressBar);
-        }
-      }
-
-      prevBtn.addEventListener('click', () => {
-        prevSlide();
-      });
-
-      nextBtn.addEventListener('click', () => {
-        nextSlide();
-      });
-
-      dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-          currentSlide = index;
-          updateCarousel();
-        });
-      });
-
-      // Initialize
-      updateCarousel();
-    </script>
-
-    <!-- ── FOOTER ────────────────────────────────────────────────── -->
     <footer class="footer">
       <div class="footer-grid">
         <div>
@@ -797,7 +831,7 @@
           <div class="footer-col-head">Support</div>
           <ul class="footer-links-list">
             <li><a href="#">Contact</a></li>
-            <li><a href="#">FAQ</a></li>
+            <li><a href="#faq">FAQ</a></li>
             <li><a href="#">Privacy Policy</a></li>
             <li><a href="#">Terms of Service</a></li>
           </ul>
@@ -809,56 +843,84 @@
       </div>
     </footer>
 
-  </div><!-- /inner-card -->
-</div><!-- /outer-shell -->
+  </div>
+</div>
 
 <script>
-  /* ── Carousel ──────────────────────────────────────── */
+  /* ── Carousel Logic ──────────────────────────────────────── */
   const slides = document.querySelectorAll('.slide');
-  const dots   = document.querySelectorAll('.dot');
+  const dots = document.querySelectorAll('.dot');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
   const timerBar = document.getElementById('timerBar');
-  let current  = 0;
-  let timer;
+
+  let currentSlide = 0;
+  const slideInterval = 5000;
+  let intervalId;
   let startTime;
   let animationFrameId;
 
-  function goTo(idx) {
-    slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = (idx + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    dots[current].classList.add('active');
+  function updateCarousel() {
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === currentSlide);
+      dots[index].classList.toggle('active', index === currentSlide);
+    });
     resetTimer();
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    updateCarousel();
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    updateCarousel();
+  }
+
+  function resetTimer() {
+    clearInterval(intervalId);
+    cancelAnimationFrame(animationFrameId);
+    startTime = performance.now();
+    intervalId = setInterval(nextSlide, slideInterval);
+    animateProgressBar();
   }
 
   function animateProgressBar() {
     const now = performance.now();
     const elapsed = now - startTime;
-    const progress = Math.min((elapsed / 5000) * 100, 100);
-    
-    if (timerBar) {
-      timerBar.style.width = progress + '%';
-    }
-    
+    const progress = Math.min((elapsed / slideInterval) * 100, 100);
+    if (timerBar) timerBar.style.width = progress + '%';
     if (progress < 100) {
       animationFrameId = requestAnimationFrame(animateProgressBar);
     }
   }
 
-  document.getElementById('prevBtn').addEventListener('click', () => { goTo(current - 1); });
-  document.getElementById('nextBtn').addEventListener('click', () => { goTo(current + 1); });
-  dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); }));
+  prevBtn.addEventListener('click', prevSlide);
+  nextBtn.addEventListener('click', nextSlide);
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      currentSlide = index;
+      updateCarousel();
+    });
+  });
 
-  function resetTimer() {
-    clearInterval(timer);
-    cancelAnimationFrame(animationFrameId);
-    
-    startTime = performance.now();
-    timer = setInterval(() => goTo(current + 1), 5000);
-    animateProgressBar();
-  }
-  resetTimer();
+  updateCarousel();
 
+  /* ── FAQ Accordion Logic ────────────────────────────────── */
+  document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', () => {
+      const item = question.parentElement;
+      item.classList.toggle('active');
+      
+      // Close other FAQ items (Optional)
+      document.querySelectorAll('.faq-item').forEach(otherItem => {
+        if (otherItem !== item) {
+          otherItem.classList.remove('active');
+        }
+      });
+    });
+  });
 </script>
 </body>
 </html>
