@@ -171,6 +171,25 @@
       transition: border-color .2s, background .2s;
     }
     .carousel-arrow:hover { border-color: var(--on-dark); background: var(--surface-elev); }
+    .carousel-play-pause {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      background: var(--surface-card);
+      color: var(--on-dark);
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      z-index: 10;
+      transition: border-color .2s, background .2s;
+    }
+    .carousel-play-pause:hover { border-color: var(--on-dark); background: var(--surface-elev); }
+
     .arrow-prev { left: var(--sp-lg); }
     .arrow-next { right: var(--sp-lg); }
 
@@ -640,6 +659,7 @@
     <section class="hero-band">
       <button class="carousel-arrow arrow-prev" id="prevBtn" aria-label="Previous slide">&#8592;</button>
       <button class="carousel-arrow arrow-next" id="nextBtn" aria-label="Next slide">&#8594;</button>
+      <button class="carousel-play-pause" id="playPauseBtn" aria-label="Pause slide">&#10074;&#10074;</button>
 
       <div class="carousel-wrapper">
         <div class="carousel-track">
@@ -916,7 +936,10 @@
     });
   });
 
+
+  const playPauseBtn = document.getElementById('playPauseBtn');
   const heroBand = document.querySelector('.hero-band');
+
   if (heroBand) {
     heroBand.addEventListener('mouseenter', () => {
       if (isPaused) return;
@@ -924,11 +947,13 @@
       clearInterval(intervalId);
       cancelAnimationFrame(animationFrameId);
       pausedTime = performance.now();
+      if(playPauseBtn) playPauseBtn.innerHTML = '&#9658;';
     });
 
     heroBand.addEventListener('mouseleave', () => {
       if (!isPaused) return;
       isPaused = false;
+      if(playPauseBtn) playPauseBtn.innerHTML = '&#10074;&#10074;';
 
       const pausedDuration = performance.now() - pausedTime;
       startTime += pausedDuration;
