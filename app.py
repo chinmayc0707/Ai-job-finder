@@ -43,6 +43,11 @@ def about():
 def jobs():
     return render_template('jobs.html', jobs=AI_Job_recommendation)
 
+@app.route('/job-board')
+def job_board():
+    return render_template('job_board.html', jobs=AI_Job_recommendation)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
