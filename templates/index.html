@@ -861,6 +861,8 @@
   let intervalId;
   let startTime;
   let animationFrameId;
+  let isPaused = false;
+  let pausedTime = 0;
 
   function updateCarousel() {
     slides.forEach((slide, index) => {
@@ -883,12 +885,19 @@
   function resetTimer() {
     clearInterval(intervalId);
     cancelAnimationFrame(animationFrameId);
+
     startTime = performance.now();
+    if (timerBar) timerBar.style.width = '0%';
+
+    if (isPaused) return;
+
     intervalId = setInterval(nextSlide, slideInterval);
     animateProgressBar();
   }
 
   function animateProgressBar() {
+    if (isPaused) return;
+
     const now = performance.now();
     const elapsed = now - startTime;
     const progress = Math.min((elapsed / slideInterval) * 100, 100);
@@ -906,6 +915,35 @@
       updateCarousel();
     });
   });
+
+  const heroBand = document.querySelector('.hero-band');
+  if (heroBand) {
+    heroBand.addEventListener('mouseenter', () => {
+      if (isPaused) return;
+      isPaused = true;
+      clearInterval(intervalId);
+      cancelAnimationFrame(animationFrameId);
+      pausedTime = performance.now();
+    });
+
+    heroBand.addEventListener('mouseleave', () => {
+      if (!isPaused) return;
+      isPaused = false;
+
+      const pausedDuration = performance.now() - pausedTime;
+      startTime += pausedDuration;
+
+      const elapsed = performance.now() - startTime;
+      const remainingTime = Math.max(0, slideInterval - elapsed);
+
+      clearInterval(intervalId);
+      intervalId = setTimeout(() => {
+        nextSlide();
+      }, remainingTime);
+
+      animateProgressBar();
+    });
+  }
 
   updateCarousel();
 
