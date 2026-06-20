@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Featured Jobs - Job Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --canvas:          #000000;
+      --surface-soft:    #0d0d0d;
+      --surface-card:    #1a1a1a;
+      --surface-elev:    #262626;
+      --carbon:          #2b2b2b;
+      --hairline:        #3c3c3c;
+      --hairline-strong: #262626;
+      --on-dark:         #ffffff;
+      --body-text:       #bbbbbb;
+      --body-strong:     #e6e6e6;
+      --muted:           #7e7e7e;
+      --sp-xs:  8px;
+      --sp-sm:  12px;
+      --sp-md:  16px;
+      --sp-lg:  24px;
+      --sp-xl:  40px;
+      --sp-xxl: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--canvas);
+      color: var(--on-dark);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .top-nav {
+      height: 64px;
+      background: var(--canvas);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--sp-xl);
+      border-bottom: 1px solid var(--hairline);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--on-dark);
+    }
+
+    .btn-back {
+      color: var(--body-text);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color .2s;
+    }
+    .btn-back:hover { color: var(--on-dark); }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--sp-xxl) var(--sp-xl);
+    }
+
+    .page-header {
+      margin-bottom: var(--sp-xxl);
+    }
+
+    .page-header h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.05;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-md);
+    }
+
+    .page-header p {
+      font-size: 16px;
+      color: var(--body-text);
+    }
+
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--sp-md);
+    }
+
+    .job-card {
+      background: var(--surface-card);
+      border: 1px solid var(--hairline);
+      padding: var(--sp-lg) var(--sp-xl);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color .2s, background .2s;
+    }
+    .job-card:hover {
+      border-color: var(--on-dark);
+      background: var(--surface-elev);
+    }
+
+    .job-info h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--on-dark);
+      margin-bottom: var(--sp-xs);
+    }
+
+    .job-details {
+      font-size: 14px;
+      color: var(--body-text);
+      display: flex;
+      gap: var(--sp-md);
+    }
+
+    .job-details span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-apply {
+      background: var(--on-dark);
+      color: var(--canvas);
+      padding: 0 var(--sp-lg);
+      height: 40px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      transition: opacity .2s;
+    }
+    .btn-apply:hover { opacity: 0.8; }
+
+    @media (max-width: 768px) {
+      .job-card { flex-direction: column; align-items: flex-start; gap: var(--sp-md); }
+      .btn-apply { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="/" class="nav-logo">Logo</a>
+    <a href="/" class="btn-back">← Back to Home</a>
+  </nav>
+
+  <div class="container">
+    <header class="page-header">
+      <h1>Featured Jobs</h1>
+      <p>Curated opportunities based on your skill set and preferences.</p>
+    </header>
+
+    <div class="jobs-grid">
+      {% for job in jobs %}
+      <div class="job-card">
+        <div class="job-info">
+          <h3>{{ job.title }}</h3>
+          <div class="job-details">
+            <span><strong>{{ job.location }}</strong></span>
+            <span><strong>{{ job.salary }}</strong></span>
+            <span><strong>{{ job.type }}</strong></span>
+          </div>
+        </div>
+        <a href="#" class="btn-apply">Apply Now</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>

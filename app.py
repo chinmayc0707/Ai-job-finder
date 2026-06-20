@@ -7,6 +7,37 @@ app.secret_key = 'supersecretkey' # Required for flashing messages
 def home():
     return render_template('index.html')
 
+AI_Job_recommendation = [
+    {
+        "title": "Senior AI Engineer",
+        "location": "Remote",
+        "salary": "$140k - $180k",
+        "type": "Full-time"
+    },
+    {
+        "title": "Product Designer",
+        "location": "New York, NY",
+        "salary": "$110k - $150k",
+        "type": "Full-time"
+    },
+    {
+        "title": "Frontend Developer (React)",
+        "location": "Remote",
+        "salary": "$90k - $130k",
+        "type": "Contract"
+    },
+    {
+        "title": "Data Scientists",
+        "location": "London, UK",
+        "salary": "£70k - £90k",
+        "type": "Full-time"
+    }
+]
+
+@app.route('/jobs')
+def jobs():
+    return render_template('jobs.html', jobs=AI_Job_recommendation)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
