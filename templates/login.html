@@ -187,31 +187,76 @@
   </nav>
 
   <main class="login-container">
+
     <div class="login-card">
-      <div class="login-header">
-        <h1>Login</h1>
-        <p>Welcome back. Please enter your details.</p>
+      <div id="login-section">
+        <div class="login-header">
+          <h1>Login</h1>
+          <p>Welcome back. Please enter your details.</p>
+        </div>
+
+        <form action="/login" method="POST">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+          </div>
+
+          <button type="submit" class="btn-submit">Sign In</button>
+        </form>
+
+        <div class="login-footer">
+          Don't have an account? <a href="#" onclick="toggleSignup(event)">Sign up</a>
+        </div>
       </div>
 
-      <form action="/login" method="POST">
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+      <div id="signup-section" style="display: none;">
+        <div class="login-header">
+          <h1>Sign Up</h1>
+          <p>Create an account to get started.</p>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+        <form action="/signup" method="POST">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+          </div>
+
+          <button type="submit" class="btn-submit">Sign Up</button>
+        </form>
+
+        <div class="login-footer">
+          Already have an account? <a href="#" onclick="toggleSignup(event)">Log in</a>
         </div>
-
-        <button type="submit" class="btn-submit">Sign In</button>
-      </form>
-
-      <div class="login-footer">
-        Don't have an account? <a href="#">Sign up</a>
       </div>
     </div>
   </main>
+
+  <script>
+    function toggleSignup(e) {
+      e.preventDefault();
+      var loginSection = document.getElementById('login-section');
+      var signupSection = document.getElementById('signup-section');
+
+      if (loginSection.style.display === 'none') {
+        loginSection.style.display = 'block';
+        signupSection.style.display = 'none';
+      } else {
+        loginSection.style.display = 'none';
+        signupSection.style.display = 'block';
+      }
+    }
+  </script>
+
 
 </body>
 </html>
