@@ -66,5 +66,15 @@ def login():
         
     return render_template('login.html')
 
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    # Simple check for demonstration
+    if email and password:
+        return redirect(url_for('home'))
+    return redirect(url_for('login'))
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
