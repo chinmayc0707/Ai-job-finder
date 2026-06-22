@@ -222,7 +222,18 @@
   <main class="login-container">
 
 
+
     <div class="login-card" id="flip-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div style="margin-bottom: var(--sp-md); padding: var(--sp-sm); border-radius: 4px; text-align: center;">
+            {% for category, message in messages %}
+              <p style="color: {% if category == 'error' %}var(--m-red){% else %}var(--m-blue-lt){% endif %}; font-weight: 700;">{{ message }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
       <div class="login-card-inner">
         <div class="login-card-front" id="login-section">
           <div class="login-header">

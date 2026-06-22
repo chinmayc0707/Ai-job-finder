@@ -653,7 +653,13 @@
         <li><a href="/jobs">Job Board</a></li>
       </ul>
       <div class="nav-right">
-        <a href="/login" class="btn-login" style="display: inline-block; text-align: center; line-height: 36px;">Login</a>
+
+    {% if current_user %}
+      <a href="/logout" class="btn-primary" style="background: transparent; color: var(--on-dark); border-color: var(--on-dark);">Logout</a>
+    {% else %}
+      <a href="/login" class="btn-primary" style="background: transparent; color: var(--on-dark); border-color: var(--on-dark);">Login</a>
+    {% endif %}
+
       </div>
     </nav>
 
