@@ -1,6 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
+import os
 
 app = Flask(__name__)
+
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    assets_dir = os.path.join(app.root_path, 'assets')
+    return send_from_directory(assets_dir, filename)
 app.secret_key = 'supersecretkey' # Required for flashing messages
 
 @app.route('/')
