@@ -33,12 +33,17 @@ This is a Flask-based web application that serves as a job portal with a focus o
 
 2. **Run the application locally:**
    Start the development server:
+   ##### Mac and Linux systems
    ```bash
    python3 app.py
    ```
+   ##### Windows
+   ```bash
+   python app.py
+   ```
    The application will be available at `http://localhost:5000`.
 
-3. **Run the application in production:**
+4. **Run the application in production:**
    For a production environment, use a WSGI server like Gunicorn:
    ```bash
    gunicorn app:app
