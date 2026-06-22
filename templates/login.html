@@ -175,6 +175,36 @@
     @media (max-width: 480px) {
       .login-card { padding: var(--sp-xl); }
     }
+
+    /* ─── FLIP ANIMATION ────────────────────────────────────── */
+    .login-container {
+      perspective: 1000px;
+    }
+    .login-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: left;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .login-card.is-flipped .login-card-inner {
+      transform: rotateY(180deg);
+    }
+    .login-card-front, .login-card-back {
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .login-card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotateY(180deg);
+    }
+    /* Disable display:none on sections since we use 3D transforms */
+
   </style>
 </head>
 <body>
@@ -188,74 +218,72 @@
 
   <main class="login-container">
 
-    <div class="login-card">
-      <div id="login-section">
-        <div class="login-header">
-          <h1>Login</h1>
-          <p>Welcome back. Please enter your details.</p>
+
+    <div class="login-card" id="flip-container">
+      <div class="login-card-inner">
+        <div class="login-card-front" id="login-section">
+          <div class="login-header">
+            <h1>Login</h1>
+            <p>Welcome back. Please enter your details.</p>
+          </div>
+
+          <form action="/login" method="POST">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit" class="btn-submit">Sign In</button>
+          </form>
+
+          <div class="login-footer">
+            Don't have an account? <a href="#" onclick="toggleSignup(event)">Sign up</a>
+          </div>
         </div>
 
-        <form action="/login" method="POST">
-          <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+        <div class="login-card-back" id="signup-section">
+          <div class="login-header">
+            <h1>Sign Up</h1>
+            <p>Create an account to get started.</p>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+          <form action="/signup" method="POST">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-input" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit" class="btn-submit">Sign Up</button>
+          </form>
+
+          <div class="login-footer">
+            Already have an account? <a href="#" onclick="toggleSignup(event)">Log in</a>
           </div>
-
-          <button type="submit" class="btn-submit">Sign In</button>
-        </form>
-
-        <div class="login-footer">
-          Don't have an account? <a href="#" onclick="toggleSignup(event)">Sign up</a>
-        </div>
-      </div>
-
-      <div id="signup-section" style="display: none;">
-        <div class="login-header">
-          <h1>Sign Up</h1>
-          <p>Create an account to get started.</p>
-        </div>
-
-        <form action="/signup" method="POST">
-          <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" name="email" class="form-input" placeholder="name@company.com" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-input" placeholder="••••••••" required />
-          </div>
-
-          <button type="submit" class="btn-submit">Sign Up</button>
-        </form>
-
-        <div class="login-footer">
-          Already have an account? <a href="#" onclick="toggleSignup(event)">Log in</a>
         </div>
       </div>
     </div>
+
   </main>
+
 
   <script>
     function toggleSignup(e) {
       e.preventDefault();
-      var loginSection = document.getElementById('login-section');
-      var signupSection = document.getElementById('signup-section');
-
-      if (loginSection.style.display === 'none') {
-        loginSection.style.display = 'block';
-        signupSection.style.display = 'none';
-      } else {
-        loginSection.style.display = 'none';
-        signupSection.style.display = 'block';
-      }
+      var container = document.getElementById('flip-container');
+      container.classList.toggle('is-flipped');
     }
   </script>
+
 
 
 </body>
