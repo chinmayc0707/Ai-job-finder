@@ -9,9 +9,50 @@ def serve_assets(filename):
     return send_from_directory(assets_dir, filename)
 app.secret_key = 'supersecretkey' # Required for flashing messages
 
+
+hero_slides = [
+    {
+        "eyebrow": "AI-Powered Platform",
+        "heading": "Find Your<br>Next Role.",
+        "body": "AI-powered job matching connects you with the right opportunities every day — curated precisely to your skills and goals.",
+        "ctas": [
+            {"text": "Explore Jobs &nbsp;→", "href": "/jobs", "class": "btn-primary"},
+            {"text": "Upload Resume", "class": "btn-outline"}
+        ]
+    },
+    {
+        "eyebrow": "For Employers",
+        "heading": "Hire With<br>Precision.",
+        "body": "Thousands of leading companies rely on our platform to find top talent quickly and confidently.",
+        "ctas": [
+            {"text": "Post a Job &nbsp;→", "class": "btn-primary"},
+            {"text": "View Packages", "class": "btn-outline"}
+        ]
+    },
+    {
+        "eyebrow": "Career Growth",
+        "heading": "Curated<br>For You.",
+        "body": "Receive daily alerts tailored to your profile. Your next career move is closer than you think.",
+        "ctas": [
+            {"text": "Create Profile &nbsp;→", "class": "btn-primary"},
+            {"text": "Browse All", "class": "btn-outline"}
+        ]
+    },
+    {
+        "eyebrow": "Trusted Network",
+        "heading": "98% Placement<br>Rate.",
+        "body": "Our record speaks for itself. Join over 10,000 professionals who've landed their ideal role through our platform.",
+        "ctas": [
+            {"text": "Get Started &nbsp;→", "class": "btn-primary"},
+            {"text": "View Stories", "class": "btn-outline"}
+        ]
+    }
+]
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', hero_slides=hero_slides)
+
 
 AI_Job_recommendation = [
     {
