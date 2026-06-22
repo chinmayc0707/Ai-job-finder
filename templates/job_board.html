@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Job Board - Job Portal</title>
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet" />
   <style>
@@ -155,7 +156,7 @@
 <body>
 
   <nav class="top-nav">
-    <a href="/" class="nav-logo">Logo</a>
+    <a href="/" class="nav-logo"><img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="height: 30px; vertical-align: middle;"></a>
     <a href="/" class="btn-back">← Back to Home</a>
   </nav>
 
