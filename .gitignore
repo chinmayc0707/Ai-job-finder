@@ -1,3 +1,5 @@
 .venv
 *.log
 venv/
+.env
+test_avatar.py

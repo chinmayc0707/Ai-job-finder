@@ -143,6 +143,60 @@
     }
     .btn-login:hover { background: var(--canvas); color: var(--on-dark); }
 
+    /* ─── USER AVATAR ──────────────────────────────────────────── */
+    .user-avatar-wrap {
+      position: relative;
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--on-dark);
+      color: var(--canvas);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s;
+    }
+    .user-avatar:hover { opacity: 0.85; }
+    .user-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface-card);
+      border: 1px solid var(--hairline);
+      min-width: 160px;
+      z-index: 200;
+    }
+    .user-dropdown.active {
+      display: block;
+    }
+    .user-dropdown-email {
+      padding: var(--sp-sm) var(--sp-md);
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--hairline);
+      word-break: break-all;
+    }
+    .user-dropdown a {
+      display: block;
+      padding: var(--sp-sm) var(--sp-md);
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--body-text);
+      transition: background .15s, color .15s;
+    }
+    .user-dropdown a:hover {
+      background: var(--surface-elev);
+      color: var(--on-dark);
+    }
+
 
     /* ─── HERO CAROUSEL BAND ─────────────────────────────────── */
     .hero-band {
@@ -563,7 +617,17 @@
         <li><a href="/jobs">Job Board</a></li>
       </ul>
       <div class="nav-right">
-        <a href="/login" class="btn-login" style="display: inline-block; text-align: center; line-height: 36px;">Login</a>
+        {% if current_user %}
+          <div class="user-avatar-wrap">
+            <button class="user-avatar" aria-label="User menu">{{ user_initial }}</button>
+            <div class="user-dropdown">
+              <div class="user-dropdown-email">{{ current_user }}</div>
+              <a href="/logout">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="/login" class="btn-login" style="display: inline-block; text-align: center; line-height: 36px;">Login</a>
+        {% endif %}
       </div>
     </nav>
 
@@ -692,6 +756,21 @@
     animateProgressBar();
   }
   resetTimer();
+
+  // User dropdown click-toggle behavior
+  const userAvatar = document.querySelector('.user-avatar');
+  const userDropdown = document.querySelector('.user-dropdown');
+  if (userAvatar && userDropdown) {
+    userAvatar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+      if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.remove('active');
+      }
+    });
+  }
 
 </script>
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>

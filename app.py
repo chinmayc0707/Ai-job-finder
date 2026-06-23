@@ -1,13 +1,83 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, make_response
+from dotenv import load_dotenv
 import os
+import jwt
+from datetime import datetime, timedelta, timezone
+from functools import wraps
+
+load_dotenv()
+
+from models import SessionLocal, User
 
 app = Flask(__name__)
+app.secret_key = os.getenv('JWT_SECRET', 'supersecretkey')
+
+JWT_SECRET = os.getenv('JWT_SECRET', 'supersecretkey')
+JWT_ALGORITHM = 'HS256'
+JWT_EXPIRATION_HOURS = 24
+
+
+# ─── JWT HELPERS ─────────────────────────────────────────────
+
+def generate_token(email):
+    """Generate a JWT token for the given email."""
+    payload = {
+        'email': email,
+        'exp': datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS),
+        'iat': datetime.now(timezone.utc)
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+
+def decode_token(token):
+    """Decode a JWT token and return the payload, or None if invalid/expired."""
+    try:
+        return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        return None
+
+
+def get_current_user():
+    """Get the current user's email from the JWT cookie, or None."""
+    token = request.cookies.get('auth_token')
+    if not token:
+        return None
+    payload = decode_token(token)
+    if payload:
+        return payload.get('email')
+    return None
+
+
+def login_required(f):
+    """Decorator to protect routes that require authentication."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        user_email = get_current_user()
+        if not user_email:
+            flash('Please log in to access this page.', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated
+
+
+# ─── CONTEXT PROCESSOR ──────────────────────────────────────
+
+@app.context_processor
+def inject_user():
+    """Make current_user available in all templates."""
+    email = get_current_user()
+    return {
+        'current_user': email,
+        'user_initial': email[0].upper() if email else None
+    }
+
+
+# ─── ROUTES ─────────────────────────────────────────────────
 
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
     assets_dir = os.path.join(app.root_path, 'assets')
     return send_from_directory(assets_dir, filename)
-app.secret_key = 'supersecretkey' # Required for flashing messages
 
 
 hero_slides = [
@@ -95,27 +165,92 @@ def job_board():
     return render_template('job_board.html', jobs=AI_Job_recommendation)
 
 
+# ─── AUTH ROUTES ─────────────────────────────────────────────
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        # For now, we'll just implement a simple check for demonstration
-        if email and password:
-            return redirect(url_for('home'))
-        
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+
+        if not email or not password:
+            flash('Please fill in all fields.', 'error')
+            return render_template('login.html')
+
+        db = SessionLocal()
+        try:
+            user = db.query(User).filter(User.email == email).first()
+            if not user or not user.check_password(password):
+                flash('Invalid email or password.', 'error')
+                return render_template('login.html')
+
+            # Generate JWT and set cookie
+            token = generate_token(email)
+            response = make_response(redirect(url_for('home')))
+            response.set_cookie(
+                'auth_token', token,
+                httponly=True,
+                max_age=JWT_EXPIRATION_HOURS * 3600,
+                samesite='Lax'
+            )
+            return response
+        finally:
+            db.close()
+
     return render_template('login.html')
 
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    # Simple check for demonstration
-    if email and password:
-        return redirect(url_for('home'))
-    return redirect(url_for('login'))
+    email = request.form.get('email', '').strip().lower()
+    password = request.form.get('password', '')
+
+    if not email or not password:
+        flash('Please fill in all fields.', 'error')
+        return redirect(url_for('login'))
+
+    if len(password) < 6:
+        flash('Password must be at least 6 characters.', 'error')
+        return redirect(url_for('login'))
+
+    db = SessionLocal()
+    try:
+        # Check if user already exists
+        existing = db.query(User).filter(User.email == email).first()
+        if existing:
+            flash('An account with this email already exists.', 'error')
+            return redirect(url_for('login'))
+
+        # Create new user
+        user = User(email=email)
+        user.set_password(password)
+        db.add(user)
+        db.commit()
+
+        # Generate JWT and set cookie
+        token = generate_token(email)
+        response = make_response(redirect(url_for('home')))
+        response.set_cookie(
+            'auth_token', token,
+            httponly=True,
+            max_age=JWT_EXPIRATION_HOURS * 3600,
+            samesite='Lax'
+        )
+        return response
+    except Exception as e:
+        db.rollback()
+        flash('Something went wrong. Please try again.', 'error')
+        return redirect(url_for('login'))
+    finally:
+        db.close()
+
+
+@app.route('/logout')
+def logout():
+    response = make_response(redirect(url_for('home')))
+    response.delete_cookie('auth_token')
+    return response
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
