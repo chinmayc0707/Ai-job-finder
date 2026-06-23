@@ -7,7 +7,7 @@ from functools import wraps
 
 load_dotenv()
 
-from models import SessionLocal, User
+from models import SessionLocal, User, Job
 
 app = Flask(__name__)
 app.secret_key = os.getenv('JWT_SECRET', 'supersecretkey')
@@ -156,13 +156,67 @@ AI_Job_recommendation = [
 def about():
     return render_template('about.html')
 
+
+def get_all_jobs():
+    """Fetch all jobs from the database, newest first. Falls back to hardcoded list if DB is empty."""
+    db = SessionLocal()
+    try:
+        db_jobs = db.query(Job).order_by(Job.created_at.desc()).all()
+        if db_jobs:
+            return [j.to_dict() for j in db_jobs]
+        return AI_Job_recommendation
+    finally:
+        db.close()
+
+
 @app.route('/jobs')
 def jobs():
-    return render_template('jobs.html', jobs=AI_Job_recommendation)
+    return render_template('jobs.html', jobs=get_all_jobs())
 
 @app.route('/job-board')
 def job_board():
-    return render_template('job_board.html', jobs=AI_Job_recommendation)
+    return render_template('job_board.html', jobs=get_all_jobs())
+
+
+@app.route('/add-job', methods=['GET', 'POST'])
+@login_required
+def add_job():
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        company = request.form.get('company', '').strip()
+        location = request.form.get('location', '').strip()
+        salary = request.form.get('salary', '').strip()
+        job_type = request.form.get('job_type', 'Full-time').strip()
+        description = request.form.get('description', '').strip()
+
+        # Validation
+        if not title or not company or not location:
+            flash('Title, Company, and Location are required.', 'error')
+            return render_template('add_job.html')
+
+        db = SessionLocal()
+        try:
+            job = Job(
+                title=title,
+                company=company,
+                location=location,
+                salary=salary or None,
+                job_type=job_type,
+                description=description or None,
+                posted_by=get_current_user()
+            )
+            db.add(job)
+            db.commit()
+            flash('Job posted successfully!', 'success')
+            return redirect(url_for('jobs'))
+        except Exception:
+            db.rollback()
+            flash('Something went wrong. Please try again.', 'error')
+            return render_template('add_job.html')
+        finally:
+            db.close()
+
+    return render_template('add_job.html')
 
 
 # ─── AUTH ROUTES ─────────────────────────────────────────────

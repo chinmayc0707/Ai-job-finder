@@ -164,6 +164,9 @@
     <header class="page-header">
       <h1>Job Board</h1>
       <p>Browse all open positions and find your next role.</p>
+      {% if current_user %}
+        <a href="/add-job" style="display: inline-block; margin-top: var(--sp-md); background: var(--on-dark); color: var(--canvas); padding: 0 var(--sp-lg); height: 40px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; line-height: 40px; transition: opacity .2s;">+ Post a Job</a>
+      {% endif %}
     </header>
 
     <div class="jobs-grid">
@@ -172,6 +175,7 @@
         <div class="job-info">
           <h3>{{ job.title }}</h3>
           <div class="job-details">
+            {% if job.company %}<span><strong>{{ job.company }}</strong></span>{% endif %}
             <span><strong>{{ job.location }}</strong></span>
             <span><strong>{{ job.salary }}</strong></span>
             <span><strong>{{ job.type }}</strong></span>
