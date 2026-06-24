@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personalized Jobs AI - Job Portal</title>
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --canvas:          #000000;
+      --surface-soft:    #0d0d0d;
+      --surface-card:    #1a1a1a;
+      --surface-elev:    #262626;
+      --carbon:          #2b2b2b;
+      --hairline:        #3c3c3c;
+      --hairline-strong: #262626;
+      --on-dark:         #ffffff;
+      --body-text:       #bbbbbb;
+      --body-strong:     #e6e6e6;
+      --muted:           #7e7e7e;
+      --sp-xs:  8px;
+      --sp-sm:  12px;
+      --sp-md:  16px;
+      --sp-lg:  24px;
+      --sp-xl:  40px;
+      --sp-xxl: 64px;
+      --m-blue-dk:       #1a73e8;
+      --m-blue-lt:       #4285f4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ::selection { background: #ffffff; color: #000000; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--canvas);
+      color: var(--on-dark);
+      font-weight: 300;
+      line-height: 1.5;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--surface-soft);
+      border-right: 1px solid var(--hairline);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      padding: var(--sp-md);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .new-chat-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--hairline);
+      color: var(--on-dark);
+      padding: var(--sp-sm);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .new-chat-btn:hover {
+      background: var(--surface-elev);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--sp-sm);
+    }
+
+    .sidebar-footer {
+      padding: var(--sp-md);
+      border-top: 1px solid var(--hairline);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+    }
+
+    /* Main Chat Area */
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .top-nav {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--sp-lg);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 120px; /* Space for input */
+      scroll-behavior: smooth;
+    }
+
+    .message-row {
+      padding: var(--sp-lg) var(--sp-xl);
+      border-bottom: 1px solid var(--hairline-strong);
+      display: flex;
+      justify-content: center;
+    }
+
+    .message-row.bot {
+      background: var(--surface-card);
+    }
+
+    .message-content {
+      max-width: 800px;
+      width: 100%;
+      display: flex;
+      gap: var(--sp-lg);
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .avatar.user { background: var(--m-blue-lt); }
+    .avatar.bot { background: #10a37f; }
+
+    .message-text {
+      flex: 1;
+      font-size: 15px;
+      line-height: 1.6;
+      padding-top: 4px;
+      white-space: pre-wrap;
+    }
+
+    /* Input Area */
+    .input-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--sp-lg);
+      background: linear-gradient(180deg, transparent, var(--canvas) 30%);
+      display: flex;
+      justify-content: center;
+    }
+
+    .input-box {
+      max-width: 800px;
+      width: 100%;
+      position: relative;
+    }
+
+    .chat-input {
+      width: 100%;
+      background: var(--surface-elev);
+      border: 1px solid var(--hairline);
+      color: var(--on-dark);
+      padding: 16px 50px 16px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .chat-input:focus {
+      border-color: var(--m-blue-lt);
+    }
+
+    .chat-input::selection {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .send-btn {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .send-btn:hover {
+      background: var(--surface-card);
+      color: var(--on-dark);
+    }
+
+    /* Job Cards in Chat */
+    .job-cards-wrapper {
+      margin-top: var(--sp-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-sm);
+    }
+
+    .job-card {
+      background: var(--surface-elev);
+      border: 1px solid var(--hairline);
+      padding: var(--sp-md);
+      border-radius: 8px;
+      transition: border-color .2s;
+    }
+
+    .job-card:hover {
+      border-color: var(--on-dark);
+    }
+
+    .job-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .job-meta {
+      font-size: 13px;
+      color: var(--body-text);
+      display: flex;
+      gap: var(--sp-md);
+      margin-bottom: var(--sp-sm);
+    }
+
+    .btn-apply-small {
+      display: inline-block;
+      background: var(--on-dark);
+      color: var(--canvas);
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding-top: 12px;
+    }
+
+    .typing-indicator span {
+      width: 6px;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out both;
+    }
+
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <button class="new-chat-btn" onclick="location.reload()">
+        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="16" width="16"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        New chat
+      </button>
+    </div>
+    <div class="sidebar-nav">
+      <!-- Chat history could go here -->
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar user">{{ user_initial if user_initial else 'U' }}</div>
+      <span>{{ current_user if current_user else 'Guest' }}</span>
+    </div>
+  </aside>
+
+  <!-- Main Chat Area -->
+  <main class="main-area">
+    <nav class="top-nav">
+      <div style="font-weight: 700;">AI Job Matcher</div>
+      <a href="/" style="font-size: 14px; color: var(--muted);">← Back to Home</a>
+    </nav>
+
+    <div class="chat-container" id="chatContainer">
+      <!-- Initial Bot Message -->
+      <div class="message-row bot">
+        <div class="message-content">
+          <div class="avatar bot">
+            <svg stroke="currentColor" fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div class="message-text">Hello! I'm your AI career assistant. Tell me about your skills, experience, and the kind of role you're looking for, and I'll find the best matches for you.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-container">
+      <div class="input-box">
+        <textarea class="chat-input" id="chatInput" rows="1" placeholder="Describe your ideal job or skills..."></textarea>
+        <button class="send-btn" id="sendBtn">
+          <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="16" width="16"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatContainer = document.getElementById('chatContainer');
+
+    // Auto-resize textarea
+    chatInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+      if(this.value === '') {
+          this.style.height = 'auto';
+      }
+    });
+
+    function appendMessage(text, isUser = false) {
+      const row = document.createElement('div');
+      row.className = `message-row ${isUser ? 'user' : 'bot'}`;
+
+      const content = document.createElement('div');
+      content.className = 'message-content';
+
+      const avatar = document.createElement('div');
+      avatar.className = `avatar ${isUser ? 'user' : 'bot'}`;
+      if (isUser) {
+        avatar.textContent = "{{ user_initial if user_initial else 'U' }}";
+      } else {
+        avatar.innerHTML = '<svg stroke="currentColor" fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+      }
+
+      const textDiv = document.createElement('div');
+      textDiv.className = 'message-text';
+      textDiv.innerHTML = text; // Allow HTML for job cards
+
+      content.appendChild(avatar);
+      content.appendChild(textDiv);
+      row.appendChild(content);
+
+      chatContainer.appendChild(row);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function showTyping() {
+      const row = document.createElement('div');
+      row.className = 'message-row bot typing-row';
+      row.id = 'typingIndicator';
+
+      const content = document.createElement('div');
+      content.className = 'message-content';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar bot';
+      avatar.innerHTML = '<svg stroke="currentColor" fill="none" stroke-width="1.5" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
+
+      const typing = document.createElement('div');
+      typing.className = 'typing-indicator message-text';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+
+      content.appendChild(avatar);
+      content.appendChild(typing);
+      row.appendChild(content);
+
+      chatContainer.appendChild(row);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      appendMessage(text, true);
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+
+      showTyping();
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+        hideTyping();
+
+        let replyHtml = data.reply;
+
+        if (data.jobs && data.jobs.length > 0) {
+            let cardsHtml = '<div class="job-cards-wrapper">';
+            data.jobs.forEach(job => {
+                cardsHtml += `
+                  <div class="job-card">
+                    <div class="job-title">${job.title}</div>
+                    <div class="job-meta">
+                      ${job.company ? `<span>${job.company}</span>` : ''}
+                      <span>•</span>
+                      <span>${job.location}</span>
+                      ${job.salary ? `<span>•</span><span>${job.salary}</span>` : ''}
+                    </div>
+                    <a href="/jobs" class="btn-apply-small">View Details</a>
+                  </div>
+                `;
+            });
+            cardsHtml += '</div>';
+            replyHtml += cardsHtml;
+        }
+
+        appendMessage(replyHtml, false);
+      } catch (error) {
+        hideTyping();
+        appendMessage("Sorry, I encountered an error connecting to the server.", false);
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

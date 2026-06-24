@@ -705,7 +705,9 @@
         <li><a href="#">Services</a></li>
         <li><a href="#">Personalized Jobs</a></li>
         <li><a href="/jobs">Job Board</a></li>
+        {% if current_user %}
         <li><a href="/add-job">Add Jobs</a></li>
+        {% endif %}
       </ul>
       <div class="nav-right">
         {% if current_user %}

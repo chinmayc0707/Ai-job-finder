@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, make_response, jsonify
 from dotenv import load_dotenv
 import os
 import jwt
@@ -217,6 +217,44 @@ def add_job():
             db.close()
 
     return render_template('add_job.html')
+
+
+
+@app.route('/personalized-jobs')
+@login_required
+def personalized_jobs():
+    return render_template('personalized_jobs.html')
+
+@app.route('/api/chat', methods=['POST'])
+@login_required
+def chat_api():
+    data = request.get_json()
+    user_msg = data.get('message', '').lower()
+
+    # Simple simulated AI matching logic
+    all_jobs = get_all_jobs()
+    matched_jobs = []
+
+    # Try to find jobs matching keywords in the message
+    for job in all_jobs:
+        if (job.get('title') and job['title'].lower() in user_msg) or \
+           (job.get('location') and job['location'].lower() in user_msg) or \
+           (job.get('type') and job['type'].lower() in user_msg) or \
+           (job.get('company') and job['company'].lower() in user_msg) or \
+           (job.get('description') and job['description'].lower() in user_msg):
+            matched_jobs.append(job)
+
+    # Fallback to AI dummy data if no specific match
+    if not matched_jobs:
+        matched_jobs = AI_Job_recommendation[:2] # Return top 2 recommendations
+        reply = "I've analyzed your profile and found these great opportunities that align with your skills:"
+    else:
+        reply = f"I found {len(matched_jobs)} job(s) that match your description. Here are the top matches:"
+
+    return jsonify({
+        'reply': reply,
+        'jobs': matched_jobs
+    })
 
 
 # ─── AUTH ROUTES ─────────────────────────────────────────────
