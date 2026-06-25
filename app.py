@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, make_response, jsonify, Response
+import json
+import re
 from dotenv import load_dotenv
 import os
 import jwt
@@ -157,6 +159,33 @@ def about():
     return render_template('about.html')
 
 
+def _match_jobs_fallback(user_msg: str, resume_text: str = '') -> list:
+    """Keyword fallback when RAG/LLM is unavailable."""
+    all_jobs = get_all_jobs()
+    search_text = f"{user_msg} {resume_text}".lower()
+    tokens = {
+        word for word in re.findall(r"[a-z0-9+#]+", search_text)
+        if len(word) > 2
+    }
+
+    scored = []
+    for job in all_jobs:
+        searchable = (
+            f"{job.get('title', '')} {job.get('company', '')} "
+            f"{job.get('location', '')} {job.get('type', '')} "
+            f"{job.get('description', '')}"
+        ).lower()
+        score = sum(1 for word in tokens if word in searchable)
+        if score > 0:
+            scored.append((score, job))
+
+    if scored:
+        scored.sort(key=lambda item: item[0], reverse=True)
+        return [job for _, job in scored[:5]]
+
+    return all_jobs[:3]
+
+
 def get_all_jobs():
     """Fetch all jobs from the database, newest first. Falls back to hardcoded list if DB is empty."""
     db = SessionLocal()
@@ -207,6 +236,17 @@ def add_job():
             )
             db.add(job)
             db.commit()
+
+            # Index the new job into Pinecone for RAG search
+            try:
+                from rag.indexer import index_single_job
+                db.refresh(job)
+                index_single_job(job.to_dict())
+            except Exception as idx_err:
+                import traceback
+                traceback.print_exc()
+                # Don't fail the job creation if indexing fails
+
             flash('Job posted successfully!', 'success')
             return redirect(url_for('jobs'))
         except Exception:
@@ -217,6 +257,86 @@ def add_job():
             db.close()
 
     return render_template('add_job.html')
+
+
+
+@app.route('/personalized-jobs')
+@login_required
+def personalized_jobs():
+    return render_template('personalized_jobs.html')
+
+@app.route('/api/chat', methods=['POST'])
+@login_required
+def chat_api():
+    data = request.get_json()
+    user_msg = data.get('message', '')
+    chat_history = data.get('history', [])
+    resume_text = data.get('resume', '')
+
+    if not user_msg.strip():
+        return jsonify({'reply': 'Please type a message.', 'jobs': []})
+
+    try:
+        from rag.rag_engine import ask
+        result = ask(
+            question=user_msg,
+            chat_history=chat_history,
+            resume_text=resume_text,
+        )
+        return jsonify({
+            'reply': result['answer'],
+            'jobs': result['jobs']
+        })
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+
+        matched_jobs = _match_jobs_fallback(user_msg, resume_text)
+
+        return jsonify({
+            'reply': f"I found {len(matched_jobs)} job(s) that might interest you. (Note: AI assistant is temporarily using basic matching.)",
+            'jobs': matched_jobs
+        })
+
+
+@app.route('/api/chat/stream', methods=['POST'])
+@login_required
+def chat_stream_api():
+    """SSE streaming endpoint for real-time AI responses."""
+    data = request.get_json()
+    user_msg = data.get('message', '')
+    chat_history = data.get('history', [])
+    resume_text = data.get('resume', '')
+
+    if not user_msg.strip():
+        return jsonify({'error': 'Empty message'}), 400
+
+    def generate():
+        try:
+            from rag.rag_engine import ask_stream
+            for event in ask_stream(
+                question=user_msg,
+                chat_history=chat_history,
+                resume_text=resume_text,
+            ):
+                yield f"data: {json.dumps(event)}\n\n"
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            matched_jobs = _match_jobs_fallback(user_msg, resume_text)
+            fallback_answer = f"I found {len(matched_jobs)} jobs that might interest you. (AI assistant is temporarily using basic matching.)"
+            yield f"data: {json.dumps({'token': fallback_answer})}\n\n"
+            yield f"data: {json.dumps({'done': True, 'jobs': matched_jobs, 'full_answer': fallback_answer})}\n\n"
+
+    return Response(
+        generate(),
+        mimetype='text/event-stream',
+        headers={
+            'Cache-Control': 'no-cache',
+            'X-Accel-Buffering': 'no',
+        }
+    )
+
 
 
 # ─── AUTH ROUTES ─────────────────────────────────────────────

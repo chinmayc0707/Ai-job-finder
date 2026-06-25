@@ -703,9 +703,11 @@
         <li><a href="/">Home</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="#">Services</a></li>
-        <li><a href="#">Personalized Jobs</a></li>
+        <li><a href="/personalized-jobs">Personalized Jobs</a></li>
         <li><a href="/jobs">Job Board</a></li>
+        {% if current_user %}
         <li><a href="/add-job">Add Jobs</a></li>
+        {% endif %}
       </ul>
       <div class="nav-right">
         {% if current_user %}
@@ -875,7 +877,7 @@
           <div class="footer-col-head">Platform</div>
           <ul class="footer-links-list">
             <li><a href="/jobs">Job Board</a></li>
-            <li><a href="#">Personalized Jobs</a></li>
+            <li><a href="/personalized-jobs">Personalized Jobs</a></li>
             <li><a href="#">AI Matching</a></li>
             <li><a href="#">Resume Upload</a></li>
           </ul>
